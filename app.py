@@ -1,4 +1,3 @@
-import os
 from dotenv import load_dotenv
 import pandas as pd
 import streamlit as st
@@ -8,9 +7,9 @@ import json
 import base64
 from PIL import Image
 
-load_dotenv()
-API_KEY = os.getenv('api_key')
+
 session = requests.Session()
+API_KEY = st.secrets["API_KEY"]
 
 def get_infor_movie(title):
     url = "https://api.apilayer.com/unogs/search/titles"
