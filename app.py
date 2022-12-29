@@ -9,11 +9,12 @@ from PIL import Image
 
 
 session = requests.Session()
+#Load API_KEY tu .toml file
 API_KEY = st.secrets["API_KEY"]
 
-def get_infor_movie(title):
-    url = "https://api.apilayer.com/unogs/search/titles"
+def get_infor_movie(title): #Lay anh poster phim dua vao ten phim tu API Unogs 
 
+    url = "https://api.apilayer.com/unogs/search/titles"
     params={
         'title':title,
         'limit': 1
@@ -37,6 +38,9 @@ def get_infor_movie(title):
     return img_link
 
 def recommend_movies(selected_movie,movies_list,sim_scores):
+    """
+            Tra ve danh sach ten 5 bo phim co do tuong dong cao nhat
+    """
     indices = pd.Series(movies_list.index, index=movies_list['title'])
     idx = indices[selected_movie]
     sim_score_results = pd.DataFrame(enumerate(sim_scores[idx]),columns = ['index','sim_score'])
@@ -44,7 +48,7 @@ def recommend_movies(selected_movie,movies_list,sim_scores):
     index_results = sim_score_results['index'].iloc[1:6]
     return movies_list.iloc[index_results]['title']
 
-def add_bg_from_local(image_file):
+def add_bg_from_local(image_file): # Them background vao website
     with open(image_file, "rb") as image_file:
         encoded_string = base64.b64encode(image_file.read())
     st.markdown(
@@ -59,12 +63,12 @@ def add_bg_from_local(image_file):
     unsafe_allow_html=True
     )
 
-def read_files():
+def read_files(): #Doc file model vao he thong
     movies_list = p.load(open('model/movie_list.pkl','rb'))
     cosine_sim = p.load(open('model/similarity.pkl','rb'))
     return (movies_list,cosine_sim)
 
-def create_input_box(movies_list,cosine_sim):
+def create_input_box(movies_list,cosine_sim): # Tao giao dien cho website
     selected_movie = st.selectbox(
         'Select a movie from the dropdown',
         movies_list['title'])
@@ -99,7 +103,7 @@ def create_input_box(movies_list,cosine_sim):
             img_link = get_infor_movie(titles[4])
             st.image(img_link,caption = titles[4])
 
-def create_footer():
+def create_footer():    # Tao footer va an footer mac dinh cua streamlit
     footer= """
         <style>
             footer {visibility: hidden;}
@@ -118,7 +122,7 @@ def create_footer():
     st.markdown(footer, unsafe_allow_html=True)
 
 if __name__ == '__main__':
-    st.set_page_config(
+    st.set_page_config( # Cau hinh mac dinh cho website
         page_title="Netflix TV shows and Movies - Movies/Series Recommendation",
         page_icon= Image.open("imgs/icon.png"),
         layout="centered",
@@ -127,7 +131,9 @@ if __name__ == '__main__':
             'About': "Project Python For Data Science\nhttps://github.com/tientran0826/content-based-movie-recommendation"
             }
     )
+    # Them background 
     add_bg_from_local("imgs/bkg.jpg")
+    # Tao giao dien cho website
     st.title("Movie Recommendation (Content-based)")
     movies_list, cosine_sim = read_files()
     create_input_box(movies_list, cosine_sim)
