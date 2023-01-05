@@ -12,29 +12,45 @@ session = requests.Session()
 #Load API_KEY tu .toml file
 API_KEY = st.secrets["API_KEY"]
 
-def get_infor_movie(title): #Lay anh poster phim dua vao ten phim tu API Unogs 
+def get_infor_movie(title): #Lay anh poster phim dua vao ten phim tu API Unogs
+    # Su dung file json de luu lai link poster moi lan user request
+    # tang toc do truy xuat va khong can request nhieu lan
+    with open("poster_links.json") as url_file:
+        img_urls = json.load(url_file)
+    img_link = Image.open('imgs/poster-holder.jpg')
+    if title in img_urls.keys():
+        # Neu phim da duoc luu link poster thi khong load lai
+        if img_urls[title] is not None:
+            return img_urls[title]
+    else:
+        # Neu phim duoc request poster link lan nao thi tien hanh goi API 
+        img_urls[title] = None
+        url = "https://api.apilayer.com/unogs/search/titles"
+        params={
+            'title':title,
+            'limit': 1
+        }
+        headers= {
+            'apikey': API_KEY,
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'
+        }
+        response = session.request("GET", url, headers=headers,params=params,stream=True)
+        data = json.loads(response.text)
+        results = data["results"]
+        if results:
+            # Neu danh sach phim tim thay theo API khong rong thi truy xuat
+            # phim dau tien (vi phim dau tien tra ve co ket qua giong nhat)
+            result = results[0]
 
-    url = "https://api.apilayer.com/unogs/search/titles"
-    params={
-        'title':title,
-        'limit': 1
-    }
-    headers= {
-        'apikey': API_KEY,
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'
-    }
+            # Tuy nhien vi goi API theo ten phim se xuat hien
+            # truong hop phim tra ve khong khop phim tim kiem
+            if result["title"] == title: 
+                img_link = result["img"]
+                img_urls[title] = img_link
 
-    response = session.request("GET", url, headers=headers,params=params,stream=True)
-    data = json.loads(response.text)
-    results = data["results"]
-    try:
-        result = results[0]
-        if result["title"] == title:
-            img_link = result["img"]
-        else:
-            img_link = Image.open('imgs/poster-holder.jpg')
-    except:
-            img_link = Image.open('imgs/poster-holder.jpg')
+        # Doc va ghi tro lai file json
+        with open('poster_links.json', 'w') as url_file:
+            json.dump(img_urls, url_file)
     return img_link
 
 def recommend_movies(selected_movie,movies_list,sim_scores):
@@ -52,6 +68,7 @@ def add_bg_from_local(image_file): # Them background vao website
     with open(image_file, "rb") as image_file:
         encoded_string = base64.b64encode(image_file.read())
     st.markdown(
+
     f"""
     <style>
     .stApp {{
@@ -76,10 +93,11 @@ def create_input_box(movies_list,cosine_sim): # Tao giao dien cho website
     if st.button('Get Recommendation'):
         img_link = get_infor_movie(selected_movie)
         st.header("Selected Movie")
+        # Phim duoc chon se duoc hien thi o cot 1 con 4 cot con lai ta khong su dung 
         col1, _, _, _, _ = st.columns(5)
         with col1:
             st.image(img_link,caption = selected_movie)
-
+        # Lay danh sach phim tuong dong
         rc_movies = recommend_movies(selected_movie,movies_list,cosine_sim)
         titles = [title for _,title in rc_movies.items()]
         st.header("Suggest for you")
