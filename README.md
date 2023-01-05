@@ -13,6 +13,6 @@ Dataset Source: [Kaggle](https://www.kaggle.com/datasets/victorsoeiro/netflix-tv
 API for poster images:  [uNoGS](https://unogs.com/) <br />
 
 ## Demo
-[View](https://tientran0826-netflix-movie-and-tv-show-recommendatio-app-nowndi.streamlit.app/) <br />
+[View](https://tientran08263-netflix-recommendation-deploy-app-n17dck.streamlit.app//) <br />
 
 ![Demo](https://raw.githubusercontent.com/tientran0826/Netflix-movie-and-TV-show-recommendation/main/imgs/demo.png)
