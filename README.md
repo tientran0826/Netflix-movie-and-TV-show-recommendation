@@ -9,6 +9,7 @@
 + 20280099: Trần Minh Tiến
 
 ## Project information
+Course: Python for Data Science
 Dataset Source: [Kaggle](https://www.kaggle.com/datasets/victorsoeiro/netflix-tv-shows-and-movies) <br />
 API for poster images:  [uNoGS](https://unogs.com/) <br />
 
