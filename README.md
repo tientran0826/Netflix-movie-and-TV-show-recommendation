@@ -8,6 +8,10 @@
 + 20280081: Nguyễn Văn Sơn
 + 20280099: Trần Minh Tiến
 
+## Introduction
+
+The film recommendation website built using Streamlit incorporates Netflix's Content-based recommendation system, which utilizes cosine similarity to suggest similar movies based on content descriptions, actors, directors, release date, genre, and more.
+
 ## Project information
 Course: Python for Data Science <br />
 Dataset Source: [Kaggle](https://www.kaggle.com/datasets/victorsoeiro/netflix-tv-shows-and-movies) <br />
