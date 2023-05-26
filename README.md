@@ -6,7 +6,7 @@
 + 20280053: Cao Huỳnh Anh Khoa
 + 20280057: Phan Tiến Kỳ
 + 20280081: Nguyễn Văn Sơn
-+ 20280099: Trần Minh Tiến
++ 20280099: Trần Minh Tiến (Leader)
 
 ## Introduction
 
